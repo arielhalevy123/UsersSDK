@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Security - do NOT track sensitive keys###
+*.pem
