@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Admin Management Portal</h1>
+
+<div class="section" id="registerSection">
+    <h2>Register</h2>
+    <input type="text" id="registerName" placeholder="Name">
+    <input type="email" id="registerEmail" placeholder="Email">
+    <input type="password" id="registerPassword" placeholder="Password">
+
+    <select id="registerRole">
+        <option value="ADMIN">Admin</option>
+        <option value="USER">User</option>
+    </select>
+
+    <input type="number" id="adminId" placeholder="Admin ID (only for USER)">
+
+    <div id="customFieldsContainer">
+        <h3>Custom Fields</h3>
+    </div>
+    <button type="button" onclick="addCustomField()">+ Add Custom Field</button>
+    <button onclick="registerAdmin()">Register</button>
+</div>
+
+<div class="section" id="loginSection">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="loginAdmin()">Login</button>
+</div>
+
+<div class="section hidden" id="adminInfo">
+    <h2>Welcome, Admin</h2>
+    <p><strong>Name:</strong> <span id="adminName"></span></p>
+    <p><strong>Email:</strong> <span id="adminEmail"></span></p>
+    <p><strong>Role:</strong> <span id="adminRole"></span></p>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<div class="section hidden" id="userListSection">
+    <h2>Users You Manage</h2>
+    <table id="userTable">
+        <thead>
+        <tr><th>Name</th><th>Email</th><th>Role</th><th>Custom Fields</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div id="editUserSection" class="section hidden">
+    <h2>Edit User</h2>
+    <input type="text" id="editName" placeholder="Name">
+    <input type="email" id="editEmail" placeholder="Email">
+    <div id="editCustomFieldsContainer"></div>
+    <button onclick="addEditCustomField()">+ Add Custom Field</button>
+    <button onclick="saveUserEdits(editingUserId)">Save</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
