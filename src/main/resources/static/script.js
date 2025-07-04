@@ -1,4 +1,4 @@
-const apiBase = 'http://localhost:8080/api';
+const apiBase = '/api';
 
 async function registerAdmin() {
     const name = document.getElementById('registerName').value;
@@ -177,7 +177,7 @@ async function saveUserEdits(userId) {
         customFields: collectCustomFieldsFromEditForm()
     };
 
-    const response = await fetch(`http://localhost:8080/api/auth/users/${userId}`, {
+    const response = await fetch(`${apiBase}/auth/users/${userId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
