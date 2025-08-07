@@ -9,12 +9,15 @@ import com.example.userssdk.service.UserService;
 import com.example.userssdk.config.JwtUtil;
 import com.example.userssdk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -70,10 +73,24 @@ public class AuthController {
     }
 
     @PutMapping("/users/{id}")
-    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     public ResponseEntity<UserDTO> updateUser(
-            @PathVariable("id") @P("userId") Long id,
+            @PathVariable Long id,
+            @AuthenticationPrincipal com.example.userssdk.entities.User principal, // ה־User ששמת ב-JwtFilter
             @RequestBody UserDTO userDto) {
+
+        // אם אין התחברות בכלל
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // אם הוא לא אדמין – מותר רק אם ה-id שווה ל-id של המשתמש המחובר
+        boolean isAdmin = "ADMIN".equals(principal.getRole().name());
+        boolean isSelf  = Objects.equals(principal.getId(), id);
+
+        if (!isAdmin && !isSelf) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         UserDTO updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }
