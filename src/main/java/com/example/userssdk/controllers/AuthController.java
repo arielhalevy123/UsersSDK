@@ -49,26 +49,52 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return ResponseEntity.ok(new UserDTO(user));  // משתמש בקונסטרקטור שמכניס גם customFields
+    public ResponseEntity<UserDTO> me(
+            @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(new UserDTO(principal));
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/my-users")
-    public ResponseEntity<List<UserDTO>> getUsersManagedByCurrentAdmin(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
+    public ResponseEntity<List<UserDTO>> getUsersManagedByCurrentPrincipal(
+            @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
 
-        User admin = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+        if (principal == null) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        }
 
-        List<UserDTO> users = userService.getUsersManagedBy(admin.getId());
+        Long adminId;
 
+        // אם זה אדמין — תחזיר את כל המשתמשים שלו
+        boolean isAdmin = "ADMIN".equals(principal.getRole().name());
+        if (isAdmin) {
+            adminId = principal.getId();
+        } else {
+            // אם זה USER — נמצא את ה-admin שלו
+            // תלוי במודל שלך: או שיש קשר ישיר principal.getAdmin().getId()
+            // או שדה מזהה כמו principal.getAdminId()
+            Long maybe = null;
+            if (principal.getAdmin() != null) {
+                maybe = principal.getAdmin().getId();
+            } else {
+                try {
+                    // אם אין אובייקט admin טעון, נטען מה־DB ונחלץ
+                    var full = userRepository.findById(principal.getId()).orElse(null);
+                    if (full != null && full.getAdmin() != null) {
+                        maybe = full.getAdmin().getId();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            if (maybe == null) {
+                // אין לו אדמין? לא יודעים על מי לאסוף משתמשים
+                return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
+            }
+            adminId = maybe;
+        }
+
+        List<UserDTO> users = userService.getUsersManagedBy(adminId);
         return ResponseEntity.ok(users);
     }
 

@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
-                        .requestMatchers("/api/auth/my-users").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/my-users").permitAll()
                         .requestMatchers("/style.css", "/script.js", "/index.html").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/auth/users/**").permitAll()
                         .anyRequest().authenticated()
@@ -62,7 +62,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080", "http://54.166.5.212:8080")
+                        .allowedOrigins("http://localhost:8080", "http://18.205.24.184:8080")
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
