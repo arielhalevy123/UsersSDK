@@ -1,0 +1,175 @@
+nohup: ignoring input
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.0)
+
+2025-07-15T14:28:39.426Z  INFO 97449 --- [UsersSDK] [           main] c.example.userssdk.UsersSdkApplication   : Starting UsersSdkApplication v0.0.1-SNAPSHOT using Java 21.0.7 with PID 97449 (/home/ubuntu/UsersSDK/build/libs/UsersSDK-0.0.1-SNAPSHOT.jar started by ubuntu in /home/ubuntu/UsersSDK)
+2025-07-15T14:28:39.434Z  INFO 97449 --- [UsersSDK] [           main] c.example.userssdk.UsersSdkApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-07-15T14:28:41.874Z  INFO 97449 --- [UsersSDK] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-15T14:28:42.067Z  INFO 97449 --- [UsersSDK] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 161 ms. Found 2 JPA repository interfaces.
+2025-07-15T14:28:44.113Z  INFO 97449 --- [UsersSDK] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-15T14:28:44.164Z  INFO 97449 --- [UsersSDK] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-15T14:28:44.164Z  INFO 97449 --- [UsersSDK] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-07-15T14:28:44.478Z  INFO 97449 --- [UsersSDK] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-15T14:28:44.481Z  INFO 97449 --- [UsersSDK] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4897 ms
+2025-07-15T14:28:44.947Z  INFO 97449 --- [UsersSDK] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-15T14:28:45.159Z  INFO 97449 --- [UsersSDK] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-07-15T14:28:45.266Z  INFO 97449 --- [UsersSDK] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-15T14:28:46.236Z  INFO 97449 --- [UsersSDK] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-15T14:28:46.327Z  INFO 97449 --- [UsersSDK] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-15T14:28:47.554Z  INFO 97449 --- [UsersSDK] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c43df76
+2025-07-15T14:28:47.556Z  INFO 97449 --- [UsersSDK] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-15T14:28:47.661Z  WARN 97449 --- [UsersSDK] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-15T14:28:47.752Z  INFO 97449 --- [UsersSDK] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 14.18
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-15T14:28:51.126Z  INFO 97449 --- [UsersSDK] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-15T14:28:51.484Z  INFO 97449 --- [UsersSDK] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-15T14:28:52.881Z  WARN 97449 --- [UsersSDK] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-15T14:28:52.966Z  INFO 97449 --- [UsersSDK] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2025-07-15T14:28:54.494Z  INFO 97449 --- [UsersSDK] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-15T14:28:54.518Z  INFO 97449 --- [UsersSDK] [           main] c.example.userssdk.UsersSdkApplication   : Started UsersSdkApplication in 16.707 seconds (process running for 18.653)
+2025-07-15T14:29:25.754Z  INFO 97449 --- [UsersSDK] [0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-15T14:29:25.756Z  INFO 97449 --- [UsersSDK] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-15T14:29:25.760Z  INFO 97449 --- [UsersSDK] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        cf1_0.user_id,
+        cf1_0.id,
+        cf1_0.field_name,
+        cf1_0.field_value 
+    from
+        public.user_custom_fields cf1_0 
+    where
+        cf1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        cf1_0.user_id,
+        cf1_0.id,
+        cf1_0.field_name,
+        cf1_0.field_value 
+    from
+        public.user_custom_fields cf1_0 
+    where
+        cf1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.admin_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        public.users u1_0 
+    left join
+        public.users a1_0 
+            on a1_0.id=u1_0.admin_id 
+    where
+        a1_0.id=?
+Hibernate: 
+    select
+        cf1_0.user_id,
+        cf1_0.id,
+        cf1_0.field_name,
+        cf1_0.field_value 
+    from
+        public.user_custom_fields cf1_0 
+    where
+        cf1_0.user_id=?
+Hibernate: 
+    select
+        cf1_0.user_id,
+        cf1_0.id,
+        cf1_0.field_name,
+        cf1_0.field_value 
+    from
+        public.user_custom_fields cf1_0 
+    where
+        cf1_0.user_id=?
+Hibernate: 
+    select
+        cf1_0.user_id,
+        cf1_0.id,
+        cf1_0.field_name,
+        cf1_0.field_value 
+    from
+        public.user_custom_fields cf1_0 
+    where
+        cf1_0.user_id=?
+2025-07-15T14:54:11.183Z  INFO 97449 --- [UsersSDK] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-15T14:54:11.190Z  INFO 97449 --- [UsersSDK] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-15T14:54:11.216Z  INFO 97449 --- [UsersSDK] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-15T14:54:11.226Z  INFO 97449 --- [UsersSDK] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-15T14:54:11.284Z  INFO 97449 --- [UsersSDK] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

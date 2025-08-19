@@ -49,13 +49,16 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> me(
-            @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.ok(new UserDTO(principal));
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtUtil.extractUsername(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return ResponseEntity.ok(new UserDTO(user));  // משתמש בקונסטרקטור שמכניס גם customFields
     }
+
     @GetMapping("/my-users")
     public ResponseEntity<List<UserDTO>> getUsersManagedByCurrentPrincipal(
             @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
