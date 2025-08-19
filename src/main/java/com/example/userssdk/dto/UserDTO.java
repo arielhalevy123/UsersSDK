@@ -20,6 +20,7 @@ public class UserDTO {
     private String email;
     private String name;
     private Role role;
+    private Long adminId;
     private List<CustomFieldDTO> customFields;
 
     public UserDTO(User user) {
@@ -27,6 +28,7 @@ public class UserDTO {
         this.email = user.getEmail();
         this.name = user.getName();
         this.role = user.getRole();
+        this.adminId = (user.getAdmin() != null ? user.getAdmin().getId() : null);
         if (user.getCustomFields() != null) {
             this.customFields = user.getCustomFields().stream()
                     .map(CustomFieldDTO::new)

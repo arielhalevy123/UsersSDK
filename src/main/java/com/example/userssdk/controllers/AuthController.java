@@ -56,6 +56,19 @@ public class AuthController {
         }
         return ResponseEntity.ok(new UserDTO(principal));
     }
+
+    @GetMapping("/my-admin")
+    public ResponseEntity<UserDTO> getMyAdmin(@AuthenticationPrincipal com.example.userssdk.entities.User principal) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        // אם המשתמש הוא USER – נחזיר את האדמין שלו
+        if (principal.getAdmin() != null) {
+            return ResponseEntity.ok(new UserDTO(principal.getAdmin()));
+        }
+
+        // אם הוא ADMIN ואין לו "אדמין" מעליו – אפשר להחזיר את עצמו או 204. אני מחזיר את עצמו כדי שיהיה שימושי גם ל־ADMIN.
+        return ResponseEntity.ok(new UserDTO(principal));
+    }
     @GetMapping("/my-users")
     public ResponseEntity<List<UserDTO>> getUsersManagedByCurrentPrincipal(
             @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
