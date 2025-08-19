@@ -11,11 +11,9 @@ import com.example.userssdk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +26,8 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
+    // ===== Auth =====
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(userService.register(request));
@@ -37,6 +37,8 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
     }
+
+    // ===== Users listing =====
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -48,51 +50,66 @@ public class AuthController {
         return ResponseEntity.ok(userService.getUsersManagedBy(adminId));
     }
 
+    // ===== Current principal =====
+
+    /**
+     * מחזיר את פרטי המשתמש המחובר עצמו (כולל customFields).
+     * מבוסס על @AuthenticationPrincipal שמוזן ע"י JwtFilter.
+     */
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return ResponseEntity.ok(new UserDTO(user));  // משתמש בקונסטרקטור שמכניס גם customFields
+    public ResponseEntity<UserDTO> me(@AuthenticationPrincipal com.example.userssdk.entities.User principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(new UserDTO(principal));
     }
 
+    /**
+     * למשתמש "USER" – יחזיר את האדמין שלו.
+     * לאדמין – נחזיר את האדמין של עצמו אם קיים; אחרת נחזיר את עצמו (כדי שיהיה שימושי).
+     */
+    @GetMapping("/my-admin")
+    public ResponseEntity<UserDTO> getMyAdmin(@AuthenticationPrincipal com.example.userssdk.entities.User principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (principal.getAdmin() != null) {
+            return ResponseEntity.ok(new UserDTO(principal.getAdmin()));
+        }
+        // ADMIN ללא אדמין מעליו – נחזיר את עצמו.
+        return ResponseEntity.ok(new UserDTO(principal));
+    }
+
+    /**
+     * אם המחובר ADMIN – מחזיר את כל המשתמשים שהוא מנהל.
+     * אם המחובר USER – מחזיר את כל המשתמשים של האדמין שמנהל אותו.
+     */
     @GetMapping("/my-users")
     public ResponseEntity<List<UserDTO>> getUsersManagedByCurrentPrincipal(
             @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
 
         if (principal == null) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Long adminId;
-
-        // אם זה אדמין — תחזיר את כל המשתמשים שלו
         boolean isAdmin = "ADMIN".equals(principal.getRole().name());
         if (isAdmin) {
             adminId = principal.getId();
         } else {
-            // אם זה USER — נמצא את ה-admin שלו
-            // תלוי במודל שלך: או שיש קשר ישיר principal.getAdmin().getId()
-            // או שדה מזהה כמו principal.getAdminId()
             Long maybe = null;
             if (principal.getAdmin() != null) {
                 maybe = principal.getAdmin().getId();
             } else {
                 try {
-                    // אם אין אובייקט admin טעון, נטען מה־DB ונחלץ
                     var full = userRepository.findById(principal.getId()).orElse(null);
                     if (full != null && full.getAdmin() != null) {
                         maybe = full.getAdmin().getId();
                     }
                 } catch (Exception ignored) {}
             }
-
             if (maybe == null) {
-                // אין לו אדמין? לא יודעים על מי לאסוף משתמשים
-                return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             adminId = maybe;
         }
@@ -101,18 +118,18 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
+    // ===== Update user (by admin or self) =====
+
     @PutMapping("/users/{id}")
     public ResponseEntity<UserDTO> updateUser(
             @PathVariable Long id,
-            @AuthenticationPrincipal com.example.userssdk.entities.User principal, // ה־User ששמת ב-JwtFilter
+            @AuthenticationPrincipal com.example.userssdk.entities.User principal,
             @RequestBody UserDTO userDto) {
 
-        // אם אין התחברות בכלל
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // אם הוא לא אדמין – מותר רק אם ה-id שווה ל-id של המשתמש המחובר
         boolean isAdmin = "ADMIN".equals(principal.getRole().name());
         boolean isSelf  = Objects.equals(principal.getId(), id);
 
@@ -123,5 +140,4 @@ public class AuthController {
         UserDTO updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }
-
 }
