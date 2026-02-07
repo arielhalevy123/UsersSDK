@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- כותרת משתמש -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"/>
+
+        <!-- כפתורי ניהול כלליים -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnAddAppt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add appt"/>
+
+            <Button
+                android:id="@+id/btnEditFields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit fields"
+                android:layout_marginStart="8dp"/>
+
+            <Button
+                android:id="@+id/btnEditUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit user"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <!-- רשימת התורים של המשתמש -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

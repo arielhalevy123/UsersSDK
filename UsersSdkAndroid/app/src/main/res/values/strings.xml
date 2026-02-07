@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">UsersSdkAndroid</string>
+    <string name="appointments_for_day_default">Appointments</string>
+    <string name="appointments_for_day">Appointments for %1$s</string>
+    <string name="no_appointments_for_day">No appointments for %1$s</string>
+    <string name="calendar">calendar\n</string>
+    <string name="profile">profile</string>
+    <string name="custom_fields">custom fields</string>
+    <string name="add_appointment">add appointment</string>
+    <string name="logout">logout</string>
+    <string name="user_id">user id</string>
+    <string name="next_appointment">next appointment</string>
+    <string name="appointments_count">appointments count</string>
+    <string name="nav_calendar">nav calendar</string>
+    <string name="nav_profile">nav profile</string>
+    <string name="userssdk_no_appointments">no appointments</string>
+    <string name="admin_id">admin id</string>
+    <string-array name="roles_array">
+        <item>ADMIN</item>
+        <item>USER</item>
+    </string-array>
+</resources>

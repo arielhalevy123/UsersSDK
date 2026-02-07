@@ -1,0 +1,7 @@
+<resources>
+    <string name="userssdk_appts_for_day">Appointments for %1$s</string>
+    <string name="userssdk_no_appts_for_day">No appointments on %1$s</string>
+    <string name="userssdk_appts_for_day_placeholder">Appointments</string>
+    <string name="userssdk_my_appointments">My appointments</string>
+    <string name="userssdk_appts_for_month">Appointments for %1$s</string>
+</resources>
