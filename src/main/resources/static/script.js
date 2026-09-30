@@ -75,13 +75,27 @@ async function loginAdmin() {
     const data = await res.json();
     if (res.ok && data.token) {
         localStorage.setItem('jwt', data.token);
-        getAdminInfo();
+        showAdminInfoFromUser(data.user);
     } else {
         alert('Login failed');
     }
 
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginPassword').value = '';
+}
+
+function showAdminInfoFromUser(data) {
+    if (!data) return;
+    document.getElementById('adminName').textContent = data.name || '';
+    document.getElementById('adminEmail').textContent = data.email || '';
+    document.getElementById('adminRole').textContent = data.role || '';
+    document.getElementById('adminInfo').classList.remove('hidden');
+    document.getElementById('registerSection').classList.add('hidden');
+    document.getElementById('loginSection').classList.add('hidden');
+
+    if (data.role === 'ADMIN') {
+        loadUsersManagedByAdmin();
+    }
 }
 
 async function getAdminInfo() {
@@ -96,16 +110,7 @@ async function getAdminInfo() {
     }
 
     const data = await res.json();
-    document.getElementById('adminName').textContent = data.name;
-    document.getElementById('adminEmail').textContent = data.email;
-    document.getElementById('adminRole').textContent = data.role;
-    document.getElementById('adminInfo').classList.remove('hidden');
-    document.getElementById('registerSection').classList.add('hidden');
-    document.getElementById('loginSection').classList.add('hidden');
-
-    if (data.role === 'ADMIN') {
-        loadUsersManagedByAdmin();
-    }
+    showAdminInfoFromUser(data);
 }
 
 async function loadUsersManagedByAdmin() {

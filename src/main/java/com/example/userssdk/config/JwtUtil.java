@@ -23,7 +23,25 @@ public class JwtUtil {
     private final Key key;
     private final long jwtExpiration = 1000 * 60 * 60 * 24;
 
-    public JwtUtil(@Value("${app.jwt.secret}") String secret) {
+    /**
+     * The signing key is supplied by the environment ({@code JWT_SECRET}), never hard-coded.
+     *
+     * Anyone holding this key can mint valid tokens for any user, including an admin, so it is the
+     * single most sensitive value in the system. Startup fails loudly rather than running with a
+     * missing or trivially short key — a service that boots with a weak signing key is worse than
+     * one that refuses to boot.
+     */
+    public JwtUtil(@Value("${app.jwt.secret:}") String secret) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException(
+                    "app.jwt.secret is not set. Export JWT_SECRET (see .env.example) — "
+                  + "generate one with: openssl rand -base64 32");
+        }
+        if (secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException(
+                    "app.jwt.secret is too short: HMAC-SHA256 requires at least 32 bytes. "
+                  + "Generate one with: openssl rand -base64 32");
+        }
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 

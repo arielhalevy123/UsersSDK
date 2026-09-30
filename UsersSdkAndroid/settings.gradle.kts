@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "UsersSdkAndroid"
 include(":app")
 include(":userssdk")
+include(":barberapp")

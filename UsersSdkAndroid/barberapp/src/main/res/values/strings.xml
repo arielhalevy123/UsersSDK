@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Barber Shop</string>
+    <string name="welcome_title">Barber Shop</string>
+    <string name="welcome_subtitle">Book your cut</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="choose_barber">Choose your barber</string>
+    <string name="i_am_barber">I\'m a barber</string>
+    <string name="book_appointment">Book a cut</string>
+    <string name="my_appointments">My appointments</string>
+    <string name="profile">Profile</string>
+    <string name="my_barber">My barber</string>
+    <string name="my_customers">My customers</string>
+    <string name="calendar">Calendar</string>
+    <string name="logout">Logout</string>
+    <string name="add_appointment">Add appointment</string>
+    <string name="service_haircut">Haircut</string>
+    <string name="service_beard">Beard trim</string>
+    <string name="service_combo">Haircut + Beard</string>
+    <string name="pick_date_time">Pick date and time</string>
+    <string name="confirm_booking">Confirm booking</string>
+    <string name="no_appointments">No appointments yet</string>
+    <string name="cancel_appointment">Cancel</string>
+</resources>

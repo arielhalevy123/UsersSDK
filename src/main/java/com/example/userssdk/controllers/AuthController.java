@@ -34,8 +34,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(userService.login(request));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            return ResponseEntity.ok(userService.login(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     // ===== Users listing =====
@@ -54,14 +58,18 @@ public class AuthController {
 
     /**
      * מחזיר את פרטי המשתמש המחובר עצמו (כולל customFields).
-     * מבוסס על @AuthenticationPrincipal שמוזן ע"י JwtFilter.
+     * טוען מחדש את המשתמש במסגרת הטרנזקציה הנוכחית כדי ש־customFields (כולל Appointment) ייטענו.
      */
     @GetMapping("/me")
     public ResponseEntity<UserDTO> me(@AuthenticationPrincipal com.example.userssdk.entities.User principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(new UserDTO(principal));
+        com.example.userssdk.entities.User user = userRepository.findById(principal.getId()).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(new UserDTO(user));
     }
 
     /**

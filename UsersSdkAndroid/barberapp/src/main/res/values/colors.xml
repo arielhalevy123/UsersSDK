@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="barber_primary">#FF1A1A1A</color>
+    <color name="barber_primary_dark">#FF0D0D0D</color>
+    <color name="barber_accent">#FFD4A84B</color>
+    <color name="barber_accent_light">#FFE8C96A</color>
+    <color name="barber_surface">#FFF5F0E8</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

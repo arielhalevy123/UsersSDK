@@ -121,10 +121,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        // תורים: הקרוב + כמות
-        List<String> appts = AppointmentUtils.readValues(u);
-        tvApptCount.setText(String.valueOf(appts.size()));
-        tvNextAppt.setText(calcNext(appts));
+        // תורים: לאדמין – סיכום מכל המשתמשים שלו; למשתמש רגיל – מהמשתמש עצמו
+        if ("ADMIN".equalsIgnoreCase(u.getRole())) {
+            loadAdminAppointmentStats();
+        } else {
+            List<String> appts = AppointmentUtils.readValues(u);
+            tvApptCount.setText(String.valueOf(appts.size()));
+            tvNextAppt.setText(calcNext(appts));
+        }
 
         // שדות מותאמים (מלבד Appointment*)
         List<CustomFieldDTO> fields = new ArrayList<>();
@@ -140,6 +144,39 @@ public class ProfileActivity extends AppCompatActivity {
         fields.sort(Comparator.comparing(cf -> safe(cf.getFieldName()).toLowerCase(Locale.ROOT)));
 
         ((CustomFieldsAdapter) rvFields.getAdapter()).submit(fields);
+    }
+
+    /** For admin: fetch my-users and show total appointment count + next appointment across all managed users. */
+    private void loadAdminAppointmentStats() {
+        UsersSdk.get().myUsers(new UsersSdk.Callback<List<UserDTO>>() {
+            @Override
+            public void onSuccess(List<UserDTO> users) {
+                int total = 0;
+                List<String> allAppts = new ArrayList<>();
+                if (users != null) {
+                    for (UserDTO u : users) {
+                        List<String> vals = AppointmentUtils.readValues(u);
+                        total += vals.size();
+                        allAppts.addAll(vals);
+                    }
+                }
+                final int count = total;
+                final String nextText = calcNext(allAppts);
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (tvApptCount != null) tvApptCount.setText(String.valueOf(count));
+                    if (tvNextAppt != null) tvNextAppt.setText(nextText);
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (tvApptCount != null) tvApptCount.setText("0");
+                    if (tvNextAppt != null) tvNextAppt.setText("אין תורים");
+                });
+            }
+        });
     }
 
     private String calcNext(List<String> appts) {

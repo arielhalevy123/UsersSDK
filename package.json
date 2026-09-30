@@ -1,0 +1,24 @@
+{
+  "name": "userssdk",
+  "version": "1.0.0",
+  "description": "Backend API and Android SDK for user and authentication management with an admin–user hierarchy, custom fields, and appointments. The backend is a Spring Boot REST API with JWT auth; the Android app uses an embeddable SDK that talks to the same API.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arielhalevy123/UsersSDK.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arielhalevy123/UsersSDK/issues"
+  },
+  "homepage": "https://github.com/arielhalevy123/UsersSDK#readme"
+}

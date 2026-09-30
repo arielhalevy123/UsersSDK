@@ -39,6 +39,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/my-users").permitAll()
                         .requestMatchers("/style.css", "/script.js", "/index.html").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/auth/users/**").permitAll()
+                        // OpenAPI docs. Browsable API description only — it exposes no data and
+                        // every documented endpoint still enforces its own authentication.
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

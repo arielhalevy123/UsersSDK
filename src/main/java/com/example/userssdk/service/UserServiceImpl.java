@@ -12,6 +12,7 @@ import com.example.userssdk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +78,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDTO> getUsersManagedBy(Long adminId) {
+        // Transaction spans this method so lazy customFields load when building UserDTO
         return userRepository.findByAdminId(adminId)
                 .stream()
                 .map(UserDTO::new)
@@ -92,7 +95,10 @@ public class UserServiceImpl implements UserService {
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
 
-        // ננקה את השדות הקודמים כדי למנוע כפילויות
+        // ננקה את השדות הקודמים כדי למנוע כפילויות (אתחול אם lazy לא נטען)
+        if (user.getCustomFields() == null) {
+            user.setCustomFields(new java.util.ArrayList<>());
+        }
         user.getCustomFields().clear();
 
         if (userDto.getCustomFields() != null) {

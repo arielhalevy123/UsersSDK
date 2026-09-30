@@ -36,5 +36,17 @@ out/
 ### VS Code ###
 .vscode/
 
+### Node (for scripts e.g. capture-admin-portal.js) ###
+node_modules/
+package-lock.json
+
 ### Security - do NOT track sensitive keys###
 *.pem
+# local secrets
+.env
+src/main/resources/application.properties.bak
+
+*.bak
+
+### macOS junk ###
+.DS_Store
