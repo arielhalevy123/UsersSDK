@@ -1,0 +1,13 @@
+# JitPack build recipe.
+#
+# The repository root is the Spring Boot server, and the Android project lives in
+# UsersSdkAndroid/. JitPack's default build would run the root (server) Gradle build and publish
+# nothing useful, so we tell it to build and install only the Android library module.
+#
+# AGP 8.7 needs JDK 17 or newer.
+jdk:
+  - openjdk17
+before_install:
+  - yes | sdkmanager --licenses > /dev/null || true
+install:
+  - cd UsersSdkAndroid && chmod +x gradlew && ./gradlew :userssdk:publishToMavenLocal --no-daemon --stacktrace
