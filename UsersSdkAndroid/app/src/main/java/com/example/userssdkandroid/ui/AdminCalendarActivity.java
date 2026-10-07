@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.userssdkandroid.R;
-import com.example.userssdk.ui.calendar.UsersSdkCalendar;
+import io.github.arielhalevy123.userssdk.ui.calendar.UsersSdkCalendar;
 
 public class AdminCalendarActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)

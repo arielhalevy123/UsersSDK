@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.barberapp.BarberAppMainActivity;
 import com.example.barberapp.R;
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 
 public class BarberProfileActivity extends AppCompatActivity {
 

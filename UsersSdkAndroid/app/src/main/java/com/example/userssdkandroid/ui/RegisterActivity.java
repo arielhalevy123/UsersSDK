@@ -7,10 +7,10 @@ import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.AuthResponse;
-import com.example.userssdk.model.CustomFieldDTO;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.AuthResponse;
+import io.github.arielhalevy123.userssdk.model.CustomFieldDTO;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 import com.example.userssdkandroid.R;
 
 import java.util.ArrayList;

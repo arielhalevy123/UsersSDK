@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barberapp.R;
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.appointments.AppointmentUtils;
-import com.example.userssdk.model.UserDTO;
-import com.example.userssdk.ui.appointments.UsersSdkAddAppointmentFab;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.appointments.AppointmentUtils;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.ui.appointments.UsersSdkAddAppointmentFab;
 
 import java.util.ArrayList;
 import java.util.List;

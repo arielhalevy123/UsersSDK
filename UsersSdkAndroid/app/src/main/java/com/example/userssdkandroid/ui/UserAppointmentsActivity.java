@@ -10,10 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.UserDTO;
-import com.example.userssdk.ui.appointments.UsersSdkAddAppointmentFab;
-import com.example.userssdk.ui.calendar.UserCalendarFragment;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.ui.appointments.UsersSdkAddAppointmentFab;
+import io.github.arielhalevy123.userssdk.ui.calendar.UserCalendarFragment;
 import com.example.userssdkandroid.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

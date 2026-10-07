@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.userssdk"
+    namespace = "io.github.arielhalevy123.userssdk"
     compileSdk = 35
 
     defaultConfig {

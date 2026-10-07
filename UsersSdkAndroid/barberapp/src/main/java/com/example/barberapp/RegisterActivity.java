@@ -15,9 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.barberapp.barber.BarberHomeActivity;
 import com.example.barberapp.customer.CustomerHomeActivity;
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.AuthResponse;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.AuthResponse;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;

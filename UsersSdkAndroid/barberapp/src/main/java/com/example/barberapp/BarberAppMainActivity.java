@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.UsersSdk;
 
 public class BarberAppMainActivity extends AppCompatActivity {
 

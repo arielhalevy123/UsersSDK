@@ -14,8 +14,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.barberapp.R;
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

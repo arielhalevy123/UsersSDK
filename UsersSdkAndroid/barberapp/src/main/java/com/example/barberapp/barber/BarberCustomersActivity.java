@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barberapp.R;
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;

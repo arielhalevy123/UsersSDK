@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.barberapp.R;
-import com.example.userssdk.ui.calendar.AdminCalendarFragment;
+import io.github.arielhalevy123.userssdk.ui.calendar.AdminCalendarFragment;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class BarberCalendarActivity extends AppCompatActivity {

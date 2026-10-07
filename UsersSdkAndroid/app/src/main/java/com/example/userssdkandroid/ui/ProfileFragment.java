@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.appointments.AppointmentUtils;
-import com.example.userssdk.model.CustomFieldDTO;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.appointments.AppointmentUtils;
+import io.github.arielhalevy123.userssdk.model.CustomFieldDTO;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 import com.example.userssdkandroid.R;
 
 import java.time.LocalDateTime;

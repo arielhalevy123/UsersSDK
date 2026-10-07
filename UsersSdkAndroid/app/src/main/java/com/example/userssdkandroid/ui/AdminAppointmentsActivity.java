@@ -17,9 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.userssdk.UsersSdk;
-import com.example.userssdk.model.CustomFieldDTO;
-import com.example.userssdk.model.UserDTO;
+import io.github.arielhalevy123.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.model.CustomFieldDTO;
+import io.github.arielhalevy123.userssdk.model.UserDTO;
 import com.example.userssdkandroid.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -299,7 +299,7 @@ public class AdminAppointmentsActivity extends AppCompatActivity
                                 return;
                             }
                             // בדיקת כפילות/חפיפה פנימית אצל אותו משתמש (למעט הישן)
-                            List<String> vals = com.example.userssdk.appointments.AppointmentUtils.readValues(user);
+                            List<String> vals = io.github.arielhalevy123.userssdk.appointments.AppointmentUtils.readValues(user);
                             for (String v : vals) {
                                 if (v.trim().equals(oldValue.trim())) continue;
                                 if (overlaps(v, newValue)) {
@@ -358,7 +358,7 @@ public class AdminAppointmentsActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void openAppointmentsEditor(UserDTO user) {
         // שליפת הערכים מה-DTO (ללא רשת)
-        List<String> items = com.example.userssdk.appointments.AppointmentUtils.readValues(user);
+        List<String> items = io.github.arielhalevy123.userssdk.appointments.AppointmentUtils.readValues(user);
 
         LinearLayout container = new LinearLayout(this);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -398,7 +398,7 @@ public class AdminAppointmentsActivity extends AppCompatActivity
                                         Toast.makeText(AdminAppointmentsActivity.this, "Added", Toast.LENGTH_SHORT).show();
                                         // עדכון UI: בניית שורות מחדש
                                         container.removeAllViews();
-                                        List<String> fresh = com.example.userssdk.appointments.AppointmentUtils.readValues(result);
+                                        List<String> fresh = io.github.arielhalevy123.userssdk.appointments.AppointmentUtils.readValues(result);
                                         rebuildAppointmentRows(result, fresh, container);
                                         ((ViewGroup) addBtn.getParent()).addView(addBtn);
                                         loadUsers();

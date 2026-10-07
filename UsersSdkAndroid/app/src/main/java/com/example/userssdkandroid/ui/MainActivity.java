@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.userssdk.UsersSdk;
+import io.github.arielhalevy123.userssdk.UsersSdk;
 import com.example.userssdkandroid.R;
 
 public class MainActivity extends AppCompatActivity {
