@@ -1,6 +1,278 @@
 # UsersSDK
 
-Backend API and Android SDK for user and authentication management with an admin–user hierarchy, custom fields, and appointments. The backend is a Spring Boot REST API with JWT auth; the Android app uses an embeddable SDK that talks to the same API.
+[![JitPack](https://jitpack.io/v/arielhalevy123/UsersSDK.svg)](https://jitpack.io/#arielhalevy123/UsersSDK)
+
+An Android library for user accounts in your app: register, login with JWT, profiles, per-user
+custom fields and appointments, backed by a Spring Boot + PostgreSQL server you can use hosted or
+run yourself.
+
+## Install
+
+### 1. Add the JitPack repository
+
+In `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+<details>
+<summary>Groovy (<code>settings.gradle</code>)</summary>
+
+```groovy
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+</details>
+
+### 2. Add the dependency
+
+In your app module's `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("com.github.arielhalevy123:UsersSDK:1.0.0")
+}
+```
+
+Groovy: `implementation 'com.github.arielhalevy123:UsersSDK:1.0.0'`
+
+The library already declares the `INTERNET` permission.
+
+### Requirements
+
+| | |
+|---|---|
+| minSdk | **24** (Android 7.0) |
+| Appointments API and calendar fragments | API **26+** (they use `java.time`) |
+| compileSdk used to build the library | 35 |
+| Java / Kotlin | Works from both; the API is plain Java |
+| AndroidX | `android.useAndroidX=true` (the default for new projects) |
+| Theme | Material Components / Material3 theme, for the bundled UI fragments |
+| Server | A UsersSDK server reachable over **HTTPS** (see [Server](#server)) |
+
+## Quick start
+
+All calls are asynchronous; callbacks arrive on the main thread.
+
+### Initialise
+
+Once, before any other call (for example in `Application.onCreate()`):
+
+```java
+import io.github.arielhalevy123.userssdk.UsersSdk;
+
+UsersSdk.init(context, "https://<railway-domain>/");
+```
+
+`baseUrl` comes from you, so you can point at the hosted server, a staging server or your own.
+A missing trailing slash is added; an invalid URL throws `IllegalArgumentException`.
+Use **https**. Android blocks plain `http` unless your app explicitly allows cleartext for that
+host (fine for `http://10.0.2.2:8080/` during local development, see
+[network security config](https://developer.android.com/privacy-and-security/security-config)).
+
+Optional settings, before `init`:
+
+```java
+UsersSdk.setConfig(new SdkConfig()
+        .setAppointmentMinutes(30)        // slot length used for conflict checks
+        .setHttpLogging(false));          // true logs request bodies (passwords, tokens): debug only
+```
+
+### Register
+
+```java
+UsersSdk.get().register(
+        "Dana Levi", "dana@example.com", "a-strong-password",
+        "USER",          // or "ADMIN"
+        adminId,         // Long id of the admin this user belongs to, or null
+        null,            // optional initial custom fields (List<CustomFieldDTO>)
+        new UsersSdk.Callback<AuthResponse>() {
+            @Override public void onSuccess(AuthResponse res) {
+                UserDTO me = res.getUser();   // the JWT is stored for you
+            }
+            @Override public void onError(Throwable error) { /* show a message */ }
+        });
+```
+
+To let a new user pick their admin (for example a barber), `UsersSdk.get().listAdmins(cb)`
+returns all users with role `ADMIN`.
+
+### Login and logout
+
+```java
+UsersSdk.get().login("dana@example.com", "a-strong-password", new UsersSdk.Callback<AuthResponse>() {
+    @Override public void onSuccess(AuthResponse res) { /* logged in */ }
+    @Override public void onError(Throwable error) { /* wrong credentials or network */ }
+});
+
+UsersSdk.get().logout();   // clears the stored token
+```
+
+The token is saved on the device and sent automatically as `Authorization: Bearer ...`.
+
+### Profile
+
+```java
+UsersSdk.get().currentUser(new UsersSdk.Callback<UserDTO>() {
+    @Override public void onSuccess(UserDTO me) {
+        String name = me.getName();
+        String role = me.getRole();   // "USER" or "ADMIN"
+    }
+    @Override public void onError(Throwable error) { }
+});
+
+UserDTO me = UsersSdk.get().getCurrentUser();   // cached copy after currentUser()/updateUser()
+me.setName("Dana L.");
+UsersSdk.get().updateUser(me, callback);
+```
+
+Admins can list the users they manage with `UsersSdk.get().myUsers(cb)`.
+
+### Custom fields
+
+Any key/value data per user (phone, notes, preferences). `updateUser` saves the **whole list**, so
+modify the existing list rather than sending a new one with a single field:
+
+```java
+UserDTO me = UsersSdk.get().getCurrentUser();
+List<CustomFieldDTO> fields = me.getCustomFields() != null
+        ? me.getCustomFields() : new ArrayList<>();
+fields.add(new CustomFieldDTO("phone", "050-1234567"));
+me.setCustomFields(fields);
+
+UsersSdk.get().updateUser(me, new UsersSdk.Callback<UserDTO>() {
+    @Override public void onSuccess(UserDTO updated) { }
+    @Override public void onError(Throwable error) { }
+});
+```
+
+### Appointments (API 26+)
+
+Appointments are stored on the user as `"yyyy-MM-dd HH:mm"` values.
+
+```java
+UsersSdk.Appointments appts = UsersSdk.appointments();
+UserDTO me = UsersSdk.get().getCurrentUser();
+
+appts.listValues(me, cb);                                    // List<String>
+appts.add(me, "2026-10-12 10:30", cb);                       // book
+appts.replace(me, "2026-10-12 10:30", "2026-10-12 11:00", cb);
+appts.delete(me, "2026-10-12 11:00", cb);
+
+// Before booking: does this slot overlap anyone else's appointment with the same admin?
+appts.hasConflictAgainstMyUsers("2026-10-12 10:30",
+        UsersSdk.config().getAppointmentMinutes(), me.getId(), true,
+        new UsersSdk.Callback<Boolean>() {
+            @Override public void onSuccess(Boolean conflict) { }
+            @Override public void onError(Throwable error) { }
+        });
+```
+
+### Ready-made UI (API 26+)
+
+```java
+Fragment calendar = UsersSdkCalendar.newUserCalendarFragment();    // a user's appointments
+Fragment adminCal = UsersSdkCalendar.newAdminCalendarFragment();   // all appointments of an admin's users
+Fragment profile  = new UserProfileFragment();                      // name + custom fields editor
+```
+
+## Server
+
+The SDK needs a UsersSDK server. Two options:
+
+**Hosted:** `https://<railway-domain>/` *(placeholder until the Railway deployment is live; see
+[RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md))*. Health check: `GET /actuator/health`.
+
+**Self-host with Docker Compose** (PostgreSQL + server):
+
+```bash
+git clone https://github.com/arielhalevy123/UsersSDK.git && cd UsersSDK
+cp .env.example .env        # fill in DB_USER, DB_PASSWORD and JWT_SECRET (openssl rand -base64 32)
+docker compose up -d --build
+curl http://localhost:8080/actuator/health
+```
+
+The Admin Portal is at `/` and interactive API docs at `/swagger-ui.html`.
+Server environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `JWT_SECRET` | **Required.** At least 32 bytes. |
+| `DB_URL`, `DB_USER`, `DB_PASSWORD` | Datasource (`jdbc:postgresql://...`). |
+| `DATABASE_URL` or `PGHOST`/`PGPORT`/`PGUSER`/`PGPASSWORD`/`PGDATABASE` | Alternative used by Railway and similar hosts; converted to a jdbc URL automatically. |
+| `PORT` | HTTP port (default 8080). |
+| `SEED_DEMO_DATA` | `true` (default) creates the demo accounts below. Set `false` on public servers. |
+| `CORS_ALLOWED_ORIGINS` | Extra browser origins, comma-separated. |
+
+Run without Docker: start PostgreSQL, export the variables above, then `./gradlew bootRun`.
+
+## API overview
+
+REST API under `/api`. Authenticated calls need `Authorization: Bearer <token>` (the SDK does
+this for you).
+
+| Method | Path | Auth | Purpose |
+|--------|------|------|---------|
+| POST | `/api/auth/register` | No | Register, returns JWT + user |
+| POST | `/api/auth/login` | No | Login, returns JWT + user |
+| GET | `/api/auth/me` | Yes | Current user |
+| GET | `/api/auth/my-admin` | Yes | The current user's admin (or self, for an admin) |
+| GET | `/api/auth/my-users` | Yes | Users I manage / my group |
+| GET | `/api/auth/all` | No | All users (used to pick an admin at registration) |
+| GET | `/api/auth/admin/{adminId}/users` | Yes | Users of a given admin |
+| PUT | `/api/auth/users/{id}` | Yes (self or admin) | Update name, email and custom fields |
+| POST | `/api/admin/users/{id}/fields` | Yes | Add a custom field |
+| GET | `/api/admin/users/{id}/fields` | Yes | List custom fields |
+| PUT | `/api/admin/fields/{id}` | Yes | Update a custom field |
+| DELETE | `/api/admin/fields/{id}` | Yes | Delete a custom field |
+| GET | `/actuator/health` | No | Health check |
+
+Full, browsable reference: `/swagger-ui.html` on any running server.
+
+## Developing this repository
+
+### Backend
+
+```bash
+./gradlew test       # unit + integration tests (H2, no database needed)
+./gradlew bootRun    # needs PostgreSQL and the variables above
+```
+
+### Android
+
+From `UsersSdkAndroid/`:
+
+```bash
+./gradlew :userssdk:testDebugUnitTest          # library unit tests
+./gradlew :userssdk:publishToMavenLocal        # build the AAR as JitPack does
+./gradlew assembleDebug -PusersSdkBaseUrl=http://192.168.1.122:8080/   # demo apps against a LAN server
+```
+
+The demo apps read the server from `BuildConfig.USERS_SDK_BASE_URL`, set once in
+`UsersSdkAndroid/build.gradle.kts` (default `https://<railway-domain>/`, override with
+`-PusersSdkBaseUrl=...`). Plain `http` is allowed only for `localhost`, `10.0.2.2` and
+`192.168.1.122` in their network security config. If the build fails with "SDK location not
+found", create `UsersSdkAndroid/local.properties` with `sdk.dir=$HOME/Library/Android/sdk`.
+See [docs/INSTALL_APP.md](docs/INSTALL_APP.md) to install a demo APK on a phone.
+
+### Releasing a new version
+
+1. Bump the default version in `UsersSdkAndroid/userssdk/build.gradle.kts`.
+2. Tag and push: `git tag 1.0.1 && git push origin 1.0.1`.
+3. Open `https://jitpack.io/#arielhalevy123/UsersSDK` and click **Get it** to trigger the build.
+   The JitPack version equals the tag name exactly.
 
 ## Features
 
@@ -19,7 +291,7 @@ This repo contains both the backend and the Android project:
 | Path | Description |
 |------|--------------|
 | **Root** | Spring Boot backend: `src/`, `build.gradle`, `Dockerfile`, `docker-compose.yml`, `ARCHITECTURE.md` |
-| **UsersSdkAndroid/** | Android project: demo **app** and **userssdk** library module |
+| **UsersSdkAndroid/** | Android project: **userssdk** library module and the demo apps **app** and **barberapp** |
 
 ```
 ├── src/                    # Backend Java + static web (Admin Portal)
@@ -28,9 +300,13 @@ This repo contains both the backend and the Android project:
 ├── docker-compose.yml
 ├── ARCHITECTURE.md         # Full architecture and modules
 ├── README.md
+├── jitpack.yml             # tells JitPack to build only UsersSdkAndroid/userssdk
+├── railway.json            # Railway build + health check
+├── RAILWAY_DEPLOY.md       # hosting steps
 └── UsersSdkAndroid/
     ├── app/                # Demo Android app
-    ├── userssdk/            # Android SDK library
+    ├── barberapp/          # Second demo app (barbershop booking)
+    ├── userssdk/           # Android SDK library (published as com.github.arielhalevy123:UsersSDK)
     ├── build.gradle.kts
     └── settings.gradle.kts
 ```
@@ -96,7 +372,7 @@ flowchart TB
 
 ### API & Admin Portal
 
-When the backend is running, open **http://localhost:8080/** to use the Admin Portal: register, login, view “Users You Manage”, and edit users and their custom fields.
+When the backend is running, open **http://localhost:8080/** (or your hosted URL) to use the Admin Portal: register, login, view “Users You Manage”, and edit users and their custom fields.
 
 **Login page**
 
@@ -132,39 +408,6 @@ adb exec-out screencap -p > docs/screenshots/app-profile.png
 ```
 
 Use your Android SDK `adb` (e.g. `$HOME/Library/Android/sdk/platform-tools/adb`) if `adb` is not in your PATH.
-
-## API overview
-
-REST API with base paths `/api/auth` and `/api/admin`. Send the JWT in the header: `Authorization: Bearer <token>`.
-
-| Method | Path | Purpose |
-|--------|------|---------|
-| POST | `/api/auth/register` | Register |
-| POST | `/api/auth/login` | Login (returns JWT + user) |
-| GET | `/api/auth/me` | Current user |
-| GET | `/api/auth/my-users` | Users I manage / my group |
-| PUT | `/api/auth/users/{id}` | Update user |
-| POST | `/api/admin/users/{id}/fields` | Add custom field |
-| GET | `/api/admin/users/{id}/fields` | List custom fields |
-| PUT | `/api/admin/fields/{id}` | Update custom field |
-| DELETE | `/api/admin/fields/{id}` | Delete custom field |
-
-## Getting started
-
-### Backend
-
-1. Clone the repo.
-2. Start PostgreSQL (e.g. `docker-compose up -d postgres`).
-3. Configure `src/main/resources/application.properties` (or env): `spring.datasource.url`, `spring.datasource.username`, `spring.datasource.password`, `app.jwt.secret`.
-4. Run: `./gradlew bootRun`. The API and Admin Portal are at **http://localhost:8080**.
-
-To run with Docker: `docker-compose up -d` (builds and runs the app container after Postgres).
-
-### Android
-
-1. **Install the app** – See **[docs/INSTALL_APP.md](docs/INSTALL_APP.md)** for building the APK and installing via USB (adb), copying the APK to your phone, or running from Android Studio.
-2. **First-time build:** From `UsersSdkAndroid/`, run `./gradlew assembleDebug`. If the build fails with "SDK location not found", add `local.properties` with `sdk.dir=` your Android SDK path (e.g. `echo "sdk.dir=$HOME/Library/Android/sdk" > local.properties`).
-3. Set the backend URL in **MainActivity** (e.g. `UsersSdk.init(this, "http://YOUR_IP:8080/");`) and run on an emulator or device.
 
 ## Documentation
 

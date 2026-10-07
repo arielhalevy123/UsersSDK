@@ -64,4 +64,4 @@ Ways to get the UsersSDK demo app onto your phone.
 
 ## Backend URL
 
-The app talks to your backend. In the code, the URL is set in **MainActivity** (e.g. `UsersSdk.init(this, "http://YOUR_IP:8080/")`). Use your computer’s local IP (not `localhost`) when testing on a real device so the phone can reach the server. Rebuild and reinstall after changing the URL.
+The app talks to your backend. The URL is `BuildConfig.USERS_SDK_BASE_URL`, set once in `UsersSdkAndroid/build.gradle.kts` (default: the hosted https server). For a server on your computer, build with `./gradlew assembleDebug -PusersSdkBaseUrl=http://YOUR_IP:8080/`. Use your computer’s local IP (not `localhost`) when testing on a real device so the phone can reach the server, and add that IP to `res/xml/network_security_config.xml` if it is not `192.168.1.122` (Android blocks plain http to other hosts). Rebuild and reinstall after changing the URL.

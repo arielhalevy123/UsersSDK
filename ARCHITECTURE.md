@@ -226,7 +226,7 @@ App → UsersSdk → UserRepository → AuthRemoteDataSource (AuthApi) or AuthLo
 
 ### Structure
 
-- **UI** (`ui/`) – **MainActivity**: initializes SDK with base URL, shows Register and Login buttons; **LoginActivity**: login via SDK, navigates to AdminAppointmentsActivity or UserAppointmentsActivity by role; **RegisterActivity**: registration with role/admin selection; **ProfileActivity** / **ProfileFragment**: profile UI; **AdminAppointmentsActivity**, **AdminCalendarActivity**, **UserAppointmentsActivity**: admin and user appointment flows; **AdminUsersAdapter**, **AppointmentRowAdapter**: list adapters.
+- **UI** (`ui/`) – **MainActivity**: initializes SDK with `BuildConfig.USERS_SDK_BASE_URL`, shows Register and Login buttons; **LoginActivity**: login via SDK, navigates to AdminAppointmentsActivity or UserAppointmentsActivity by role; **RegisterActivity**: registration with role/admin selection; **ProfileActivity** / **ProfileFragment**: profile UI; **AdminAppointmentsActivity**, **AdminCalendarActivity**, **UserAppointmentsActivity**: admin and user appointment flows; **AdminUsersAdapter**, **AppointmentRowAdapter**: list adapters.
 - **Data** – **AppointmentRepository**: in-memory list of app-level **Appointment** (id, title, time); used only for demo UI and is separate from the SDK’s backend-backed appointments (UserDTO custom fields).
 
 ### Dependency
@@ -260,7 +260,10 @@ The backend has no dedicated appointment entity. Appointments are stored as a **
 |------|--------|
 | Backend port | 8080 |
 | Backend base package | `com.example.userssdk` |
-| Android SDK init | `UsersSdk.init(context, "http://host:8080/")` |
+| Android SDK package | `io.github.arielhalevy123.userssdk` |
+| Android SDK artifact | `com.github.arielhalevy123:UsersSDK:1.0.0` (JitPack) |
+| Android SDK init | `UsersSdk.init(context, "https://<railway-domain>/")` |
+| Health check | GET `/actuator/health` |
 | Auth endpoints | POST `/api/auth/register`, POST `/api/auth/login` |
 | Current user | GET `/api/auth/me` |
 | My users | GET `/api/auth/my-users` |
