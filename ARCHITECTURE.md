@@ -264,7 +264,7 @@ The backend has no dedicated appointment entity. Appointments are stored as a **
 | Backend base package | `com.example.userssdk` |
 | Android SDK package | `io.github.arielhalevy123.userssdk` |
 | Android SDK artifact | `com.github.arielhalevy123:UsersSDK:1.0.0` (JitPack) |
-| Android SDK init | `UsersSdk.init(context, "https://<railway-domain>/")` |
+| Android SDK init | `UsersSdk.init(context, "https://userssdk-api-production.up.railway.app/")` |
 | Health check | GET `/actuator/health` |
 | Auth endpoints | POST `/api/auth/register`, POST `/api/auth/login` |
 | Current user | GET `/api/auth/me` |

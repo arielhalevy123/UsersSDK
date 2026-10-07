@@ -10,4 +10,4 @@ plugins {
 // Override without editing code:  ./gradlew assembleDebug -PusersSdkBaseUrl=http://192.168.1.122:8080/
 // or add  usersSdkBaseUrl=...  to ~/.gradle/gradle.properties.
 extra["usersSdkBaseUrl"] = providers.gradleProperty("usersSdkBaseUrl")
-    .getOrElse("https://<railway-domain>/")
+    .getOrElse("https://userssdk-api-production.up.railway.app/")

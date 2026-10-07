@@ -73,7 +73,7 @@ Once, before any other call (for example in `Application.onCreate()`):
 ```java
 import io.github.arielhalevy123.userssdk.UsersSdk;
 
-UsersSdk.init(context, "https://<railway-domain>/");
+UsersSdk.init(context, "https://userssdk-api-production.up.railway.app/");
 ```
 
 `baseUrl` comes from you, so you can point at the hosted server, a staging server or your own.
@@ -193,8 +193,7 @@ Fragment profile  = new UserProfileFragment();                      // name + cu
 
 The SDK needs a UsersSDK server. Two options:
 
-**Hosted:** `https://<railway-domain>/` *(placeholder until the Railway deployment is live; see
-[RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md))*. Health check: `GET /actuator/health`.
+**Hosted:** `https://userssdk-api-production.up.railway.app/` (live on Railway; see [RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md)). Health check: `GET /actuator/health`.
 
 **Self-host with Docker Compose** (PostgreSQL + server):
 
@@ -263,7 +262,7 @@ From `UsersSdkAndroid/`:
 ```
 
 The demo apps read the server from `BuildConfig.USERS_SDK_BASE_URL`, set once in
-`UsersSdkAndroid/build.gradle.kts` (default `https://<railway-domain>/`, override with
+`UsersSdkAndroid/build.gradle.kts` (default `https://userssdk-api-production.up.railway.app/`, override with
 `-PusersSdkBaseUrl=...`). Plain `http` is allowed only for `localhost`, `10.0.2.2` and
 `192.168.1.122` in their network security config. If the build fails with "SDK location not
 found", create `UsersSdkAndroid/local.properties` with `sdk.dir=$HOME/Library/Android/sdk`.
