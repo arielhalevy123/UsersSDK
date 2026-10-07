@@ -1,0 +1,8 @@
+# Not needed to build the server image (in addition to .gitignore).
+UsersSdkAndroid/
+docs/
+scripts/
+pull/
+app.jar
+log.txt
+usersdk.log

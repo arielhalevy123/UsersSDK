@@ -1,0 +1,19 @@
+# Keep the build context small and free of secrets.
+.env
+.env.*
+!.env.example
+.git
+.gradle
+.idea
+build
+bin
+node_modules
+UsersSdkAndroid
+docs
+scripts
+pull
+app.jar
+*.log
+log.txt
+*.bak
+**/.DS_Store

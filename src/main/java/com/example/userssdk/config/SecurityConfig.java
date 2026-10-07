@@ -2,9 +2,11 @@ package com.example.userssdk.config;
 
 import com.example.userssdk.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,8 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,11 +34,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configure(http))  // במקום cors.disable()
+                .cors(Customizer.withDefaults())  // uses the corsConfigurationSource bean below
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/api/auth/my-users").permitAll()
@@ -59,17 +65,23 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * CORS for browser clients on other origins (configure with CORS_ALLOWED_ORIGINS).
+     * The Admin Portal is same-origin and the Android SDK is not a browser, so neither needs it.
+     * Auth uses a bearer token, not cookies, so credentials are not allowed cross-origin.
+     */
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080", "http://18.205.24.184:8080")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
+    public CorsConfigurationSource corsConfigurationSource(
+            @Value("${app.cors.allowed-origins:}") List<String> allowedOrigins) {
+        CorsConfiguration cfg = new CorsConfiguration();
+        allowedOrigins.stream().map(String::trim).filter(o -> !o.isEmpty())
+                .forEach(cfg::addAllowedOriginPattern);
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        cfg.setAllowCredentials(false);
+        cfg.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", cfg);
+        return source;
     }
 }

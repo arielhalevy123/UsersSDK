@@ -5,6 +5,7 @@ import com.example.userssdk.entities.User;
 import com.example.userssdk.entities.UserCustomField;
 import com.example.userssdk.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +20,11 @@ import java.util.List;
  * - alice@example.com, bob@example.com, charlie@example.com (USER, managed by admin)
  * - eve@barber.com, frank@barber.com (USER, managed by Mike)
  * Demo users get a sample "Appointment" custom field so they can see appointments in the app.
+ *
+ * Disabled with SEED_DEMO_DATA=false (app.seed-demo-data); do that on any public deployment.
  */
 @Configuration
+@ConditionalOnProperty(name = "app.seed-demo-data", havingValue = "true", matchIfMissing = true)
 public class SeedDataLoader {
 
     @Bean
