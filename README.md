@@ -414,3 +414,7 @@ Use your Android SDK `adb` (e.g. `$HOME/Library/Android/sdk/platform-tools/adb`)
 ## Documentation
 
 For full architecture, modules, data model, and security details, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
