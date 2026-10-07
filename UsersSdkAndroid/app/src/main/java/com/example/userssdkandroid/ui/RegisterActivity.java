@@ -116,8 +116,8 @@ public class RegisterActivity extends AppCompatActivity {
                     String[] labels = new String[admins.size()];
                     for (int i = 0; i < admins.size(); i++) {
                         UserDTO a = admins.get(i);
-                        labels[i] = String.format(Locale.getDefault(), "%s (%s)  [id=%d]",
-                                a.getName(), a.getEmail(), a.getId());
+                        labels[i] = String.format(Locale.getDefault(), "%s  [id=%d]",
+                                a.getName(), a.getId());
                     }
                     new AlertDialog.Builder(RegisterActivity.this)
                             .setTitle("Choose Admin")

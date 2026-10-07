@@ -8,8 +8,9 @@ import java.util.List;
 public interface AuthApi {
     @POST("api/auth/register")
     Call<AuthResponse> register(@Body RegisterRequest body);
-    @GET("api/auth/all")
-    Call<List<UserDTO>> allUsers();
+    /** Public: id + name of every admin (for registration pickers). */
+    @GET("api/auth/admins")
+    Call<List<UserDTO>> admins();
     @POST("api/auth/login")
     Call<AuthResponse> login(@Body LoginRequest body);
 

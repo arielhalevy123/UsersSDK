@@ -107,7 +107,8 @@ UsersSdk.get().register(
 ```
 
 To let a new user pick their admin (for example a barber), `UsersSdk.get().listAdmins(cb)`
-returns all users with role `ADMIN`.
+returns the admins, without login. Each entry has only `getId()` and `getName()`; no email or
+custom fields.
 
 ### Login and logout
 
@@ -230,8 +231,9 @@ this for you).
 | GET | `/api/auth/me` | Yes | Current user |
 | GET | `/api/auth/my-admin` | Yes | The current user's admin (or self, for an admin) |
 | GET | `/api/auth/my-users` | Yes | Users I manage / my group |
-| GET | `/api/auth/all` | No | All users (used to pick an admin at registration) |
-| GET | `/api/auth/admin/{adminId}/users` | Yes | Users of a given admin |
+| GET | `/api/auth/admins` | No | Admins to choose from at registration (id + name only) |
+| GET | `/api/auth/all` | Admin | All users with their fields |
+| GET | `/api/auth/admin/{adminId}/users` | Yes (that admin) | Users of a given admin |
 | PUT | `/api/auth/users/{id}` | Yes (self or admin) | Update name, email and custom fields |
 | POST | `/api/admin/users/{id}/fields` | Yes | Add a custom field |
 | GET | `/api/admin/users/{id}/fields` | Yes | List custom fields |

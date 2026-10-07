@@ -38,6 +38,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // User listings: never public. /all is admin-only; /admin/{id}/users needs a
+                        // token and the controller checks it is that admin.
+                        .requestMatchers(HttpMethod.GET, "/api/auth/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/auth/admin/*/users").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**").permitAll()

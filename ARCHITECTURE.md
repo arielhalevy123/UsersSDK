@@ -109,8 +109,9 @@ flowchart TB
 - **AuthController** – Base path `/api/auth`.
   - `POST /register` – Register; returns AuthResponse.
   - `POST /login` – Login; returns AuthResponse.
-  - `GET /all` – All users (no auth enforced in config for some paths; typically for admin listing).
-  - `GET /admin/{adminId}/users` – Users managed by given admin.
+  - `GET /admins` – Public; id and name of every admin, for "choose your admin" at registration.
+  - `GET /all` – All users with custom fields; requires role ADMIN.
+  - `GET /admin/{adminId}/users` – Users managed by given admin; only that admin may call it.
   - `GET /me` – Current user (principal from JWT).
   - `GET /my-admin` – Admin of current user (or self if current user is admin).
   - `GET /my-users` – Users managed by current principal (admin’s users or same group as user).
@@ -127,8 +128,9 @@ flowchart TB
 |--------|------|------|---------|
 | POST   | /api/auth/register       | No  | Register |
 | POST   | /api/auth/login          | No  | Login |
-| GET    | /api/auth/all            | No* | List all users |
-| GET    | /api/auth/admin/{id}/users | Yes | Users by admin id |
+| GET    | /api/auth/admins         | No  | Admins for registration pickers (id + name only) |
+| GET    | /api/auth/all            | Admin | List all users |
+| GET    | /api/auth/admin/{id}/users | Yes (that admin) | Users by admin id |
 | GET    | /api/auth/me             | Yes | Current user |
 | GET    | /api/auth/my-admin       | Yes | My admin (or self) |
 | GET    | /api/auth/my-users       | Yes | Users I manage / my group |
@@ -142,7 +144,7 @@ flowchart TB
 
 ### Security
 
-- Public: `/api/auth/**` (login, register, etc.), static files, `/api/auth/my-users`, `PUT /api/auth/users/**`.
+- Public: `/api/auth/**` (login, register, `/admins`, etc.), static files, `/actuator/health`, `PUT /api/auth/users/**` (controller checks self/admin). Exceptions: `GET /api/auth/all` needs role ADMIN and `GET /api/auth/admin/{id}/users` needs a token for that admin.
 - Authenticated: everything else. Role is set in SecurityContext; controllers enforce “admin or self” for update and “my users” for listing where applicable.
 
 ### Data model

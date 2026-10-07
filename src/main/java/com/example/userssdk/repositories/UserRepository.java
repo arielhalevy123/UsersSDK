@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     List<User> findByAdminId(Long adminId);
+    List<User> findByRoleOrderByNameAsc(com.example.userssdk.entities.Role role);
 
     /** Load users by admin including custom fields (e.g. Appointment) so admin profile can show appointment count. */
     @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.customFields WHERE u.admin.id = :adminId")

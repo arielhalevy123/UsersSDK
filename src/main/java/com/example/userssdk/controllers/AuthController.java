@@ -1,9 +1,11 @@
 package com.example.userssdk.controllers;
 
+import com.example.userssdk.dto.AdminSummaryDTO;
 import com.example.userssdk.dto.AuthResponse;
 import com.example.userssdk.dto.LoginRequest;
 import com.example.userssdk.dto.RegisterRequest;
 import com.example.userssdk.dto.UserDTO;
+import com.example.userssdk.entities.Role;
 import com.example.userssdk.entities.User;
 import com.example.userssdk.service.UserService;
 import com.example.userssdk.config.JwtUtil;
@@ -44,13 +46,36 @@ public class AuthController {
 
     // ===== Users listing =====
 
+    /**
+     * Public: the admins a new user can attach to at registration. Only id and display name.
+     */
+    @GetMapping("/admins")
+    public ResponseEntity<List<AdminSummaryDTO>> listAdmins() {
+        return ResponseEntity.ok(userRepository.findByRoleOrderByNameAsc(Role.ADMIN).stream()
+                .map(u -> new AdminSummaryDTO(u.getId(), u.getName()))
+                .toList());
+    }
+
+    /**
+     * Full user list including custom fields and appointments. Admins only (enforced in
+     * SecurityConfig). It used to be public, which exposed every user's data to anyone.
+     */
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    /** Users of one admin; only that admin may read them. */
     @GetMapping("/admin/{adminId}/users")
-    public ResponseEntity<List<UserDTO>> getUsersByAdmin(@PathVariable Long adminId) {
+    public ResponseEntity<List<UserDTO>> getUsersByAdmin(
+            @PathVariable Long adminId,
+            @AuthenticationPrincipal com.example.userssdk.entities.User principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!Objects.equals(principal.getId(), adminId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(userService.getUsersManagedBy(adminId));
     }
 

@@ -110,17 +110,24 @@ public class UsersSdk {
         this.repo = new UserRepository(remote, local);
         this.api = api; // <-- חדש
     }
-    public void listAdmins(Callback<List<UserDTO>> cb) {   // <-- חדש
-        api.allUsers().enqueue(new retrofit2.Callback<List<UserDTO>>() {
+    /**
+     * Lists the admins a user can belong to, e.g. for a "choose your barber" screen. Works without
+     * login. Each {@link UserDTO} carries only {@code id}, {@code name} and role "ADMIN"; email
+     * and custom fields are not exposed by the server.
+     */
+    public void listAdmins(Callback<List<UserDTO>> cb) {
+        api.admins().enqueue(new retrofit2.Callback<List<UserDTO>>() {
             @Override public void onResponse(retrofit2.Call<List<UserDTO>> call,
                                              retrofit2.Response<List<UserDTO>> resp) {
                 if (!resp.isSuccessful() || resp.body() == null) {
-                    if (cb != null) cb.onError(new RuntimeException("Failed to load users"));
+                    if (cb != null) cb.onError(new RuntimeException("Failed to load admins (HTTP " + resp.code() + ")"));
                     return;
                 }
                 List<UserDTO> admins = new java.util.ArrayList<>();
                 for (UserDTO u : resp.body()) {
-                    if (u != null && "ADMIN".equalsIgnoreCase(u.getRole())) admins.add(u);
+                    if (u == null) continue;
+                    u.setRole("ADMIN");
+                    admins.add(u);
                 }
                 if (cb != null) cb.onSuccess(admins);
             }
