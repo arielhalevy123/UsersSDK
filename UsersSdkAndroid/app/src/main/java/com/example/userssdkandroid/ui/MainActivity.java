@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UsersSdk.init(this, "http://192.168.1.122:8080/");
+        UsersSdk.init(this, com.example.userssdkandroid.BuildConfig.USERS_SDK_BASE_URL);
         Button registerBtn = findViewById(R.id.register_button);
         Button loginBtn = findViewById(R.id.login_button);
 

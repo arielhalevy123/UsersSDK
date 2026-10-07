@@ -20,7 +20,10 @@ public class ServiceGenerator {
                 if (retrofit == null) {
                     // 1. צור את ה-logging interceptor
                     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    // Off unless the app opts in: bodies contain passwords and JWTs.
+                    logging.setLevel(io.github.arielhalevy123.userssdk.UsersSdk.config().isHttpLogging()
+                            ? HttpLoggingInterceptor.Level.BODY
+                            : HttpLoggingInterceptor.Level.NONE);
 
                     // 2. בנה את ה-OkHttpClient עם שני ה-interceptors
                     OkHttpClient client = new OkHttpClient.Builder()

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  HTTPS (the hosted server) needs nothing here: Android trusts the public certificate
+  Railway serves. Plain http is blocked by default; it is allowed only for these
+  local-development hosts so the app can still talk to a server on your laptop/LAN.
+-->
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>

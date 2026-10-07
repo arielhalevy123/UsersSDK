@@ -39,11 +39,54 @@ public class UsersSdk {
     // -------------------- Singleton --------------------
     private static UsersSdk instance;
 
+    /**
+     * Initialises the SDK. Call once, typically from {@code Application.onCreate()} or your
+     * launcher activity, before any other SDK call.
+     *
+     * @param context any context; the application context is retained
+     * @param baseUrl root URL of your UsersSDK server, e.g. {@code https://my-server.up.railway.app/}.
+     *                A missing trailing slash is added. Must be http or https; Android blocks
+     *                plain http unless the host app allows cleartext for that host.
+     * @throws IllegalArgumentException if {@code baseUrl} is not a valid http(s) URL
+     */
     public static synchronized UsersSdk init(@NonNull Context context, @NonNull String baseUrl) {
+        String normalized = normalizeBaseUrl(baseUrl);
         if (instance == null) {
-            instance = new UsersSdk(context.getApplicationContext(), baseUrl);
+            instance = new UsersSdk(context.getApplicationContext(), normalized);
+        } else if (!instance.baseUrl.equals(normalized)) {
+            android.util.Log.w("UsersSdk", "init() called again with a different baseUrl; "
+                    + "keeping the first one: " + instance.baseUrl);
         }
         return instance;
+    }
+
+    /**
+     * Validates a server URL and returns it with exactly one trailing slash, which Retrofit
+     * requires. Public for testing; apps do not need to call it.
+     */
+    public static String normalizeBaseUrl(String baseUrl) {
+        if (baseUrl == null || baseUrl.trim().isEmpty()) {
+            throw new IllegalArgumentException("UsersSdk baseUrl is empty");
+        }
+        String url = baseUrl.trim();
+        String lower = url.toLowerCase(java.util.Locale.ROOT);
+        if (!lower.startsWith("https://") && !lower.startsWith("http://")) {
+            throw new IllegalArgumentException(
+                    "UsersSdk baseUrl must start with https:// or http://, got: " + baseUrl);
+        }
+        String host = url.substring(url.indexOf("://") + 3);
+        if (host.isEmpty() || host.startsWith("/") || host.contains("<") || host.contains(">")
+                || host.contains(" ")) {
+            throw new IllegalArgumentException(
+                    "UsersSdk baseUrl has no valid host (placeholder not replaced?): " + baseUrl);
+        }
+        while (url.endsWith("/")) url = url.substring(0, url.length() - 1);
+        return url + "/";
+    }
+
+    /** The server URL the SDK was initialised with (always ends with "/"). */
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     public static UsersSdk get() {
@@ -57,7 +100,9 @@ public class UsersSdk {
     private final UserRepository repo;
     private UserDTO currentUser;
     private final AuthApi api;
+    private final String baseUrl;
     private UsersSdk(Context ctx, String baseUrl) {
+        this.baseUrl = baseUrl;
         AuthLocalDataSource local = new AuthLocalDataSource(ctx);
         retrofit2.Retrofit retrofit = ServiceGenerator.create(baseUrl, local::getToken);
         AuthApi api = retrofit.create(AuthApi.class);

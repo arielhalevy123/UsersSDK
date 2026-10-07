@@ -1,7 +1,5 @@
 package io.github.arielhalevy123.userssdk.network;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -26,20 +24,14 @@ public class TokenInterceptor implements Interceptor {
         String url = original.url().toString();
         String token = provider.getToken();
 
-        Log.d("TokenInterceptor", "📡 Request to: " + url);
-
         // אל תוסיף Authorization אם מדובר ב-login או register
         if (url.contains("/login") || url.contains("/register")) {
-            Log.d("TokenInterceptor", "⛔ Skipping token for auth route");
             return chain.proceed(original);
         }
 
         if (token == null || token.isEmpty()) {
-            Log.d("TokenInterceptor", "⚠️ No token available – sending request without Authorization");
             return chain.proceed(original);
         }
-
-        Log.d("TokenInterceptor", "✅ Adding token to request");
 
         Request newReq = original.newBuilder()
                 .header("Authorization", "Bearer " + token)
