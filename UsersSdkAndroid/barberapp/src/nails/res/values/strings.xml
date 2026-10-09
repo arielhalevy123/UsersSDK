@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Gel Nails Studio</string>
+    <string name="welcome_title">Gel Nails Studio</string>
+    <string name="welcome_subtitle">Book your manicure</string>
+    <string name="choose_barber">Choose your nail artist</string>
+    <string name="i_am_barber">I\'m a nail artist</string>
+    <string name="book_appointment">Book a manicure</string>
+    <string name="my_barber">My nail artist</string>
+    <string name="service_haircut">Gel manicure</string>
+    <string name="service_beard">Gel pedicure</string>
+    <string name="service_combo">Manicure + Pedicure</string>
+</resources>

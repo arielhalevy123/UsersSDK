@@ -5,6 +5,7 @@
     <color name="barber_accent">#FFD4A84B</color>
     <color name="barber_accent_light">#FFE8C96A</color>
     <color name="barber_surface">#FFF5F0E8</color>
+    <color name="brand_on_accent">#FF141414</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

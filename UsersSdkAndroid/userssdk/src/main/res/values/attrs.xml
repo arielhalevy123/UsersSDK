@@ -4,4 +4,15 @@
         <attr name="durationMinutes" format="integer"/>
         <attr name="allowSameUserId" format="boolean"/>
     </declare-styleable>
+
+    <!-- Theme attributes that brand the SDK's built-in screens (see UsersSdkTheme).
+         Set them in the app theme; any left out falls back to the Material colours. -->
+    <attr name="usersSdkColorPrimary" format="color|reference"/>
+    <attr name="usersSdkColorOnPrimary" format="color|reference"/>
+    <attr name="usersSdkColorSurface" format="color|reference"/>
+    <attr name="usersSdkColorCard" format="color|reference"/>
+    <attr name="usersSdkColorOnSurface" format="color|reference"/>
+    <attr name="usersSdkColorMuted" format="color|reference"/>
+    <attr name="usersSdkCornerRadius" format="dimension"/>
+    <attr name="usersSdkFontFamily" format="reference"/>
 </resources>

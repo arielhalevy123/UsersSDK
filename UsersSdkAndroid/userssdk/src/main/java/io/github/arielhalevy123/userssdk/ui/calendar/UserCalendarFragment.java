@@ -1,6 +1,5 @@
 package io.github.arielhalevy123.userssdk.ui.calendar;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.github.arielhalevy123.userssdk.R;
 import io.github.arielhalevy123.userssdk.UsersSdk;
 import io.github.arielhalevy123.userssdk.appointments.AppointmentUtils;
+import io.github.arielhalevy123.userssdk.ui.UsersSdkTheme;
 import io.github.arielhalevy123.userssdk.model.UserDTO;
 import com.kizitonwose.calendar.core.CalendarDay;
 import com.kizitonwose.calendar.view.CalendarView;
@@ -52,6 +52,7 @@ public class UserCalendarFragment extends Fragment {
             DateTimeFormatter.ofPattern("LLLL yyyy", Locale.getDefault());
     // State
     private YearMonth visibleMonth;
+    private UsersSdkTheme theme;
 
     // Formatters
     private final DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
@@ -63,13 +64,15 @@ public class UserCalendarFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.userssdk_fragment_user_calendar, container, false);
+        theme = UsersSdkTheme.of(requireContext());
+        theme.applyToScreen(v);
         tvMonthTitle = v.findViewById(R.id.tvMonthTitle);
 
         calendarView = v.findViewById(R.id.calendarView);
         rvMonthList  = v.findViewById(R.id.rvMonthList);
 
         rvMonthList.setLayoutManager(new LinearLayoutManager(requireContext()));
-        monthAdapter = new SimpleTextAdapter(monthItems);
+        monthAdapter = new SimpleTextAdapter(monthItems, theme);
         rvMonthList.setAdapter(monthAdapter);
 
         // Calendar setup
@@ -96,8 +99,11 @@ public class UserCalendarFragment extends Fragment {
             public void bind(@NonNull DayViewHolder holder, @NonNull CalendarDay day) {
                 LocalDate d = day.getDate();
                 holder.text.setText(String.valueOf(d.getDayOfMonth()));
-                holder.text.setTextColor(YearMonth.from(d).equals(visibleMonth) ? Color.BLACK : Color.LTGRAY);
-                holder.text.setBackgroundResource(apptDates.contains(d) ? R.drawable.circle_red : 0);
+                boolean booked = apptDates.contains(d);
+                theme.applyFont(holder.text);
+                holder.text.setTextColor(booked ? theme.onPrimary
+                        : YearMonth.from(d).equals(visibleMonth) ? theme.onSurface : theme.muted);
+                holder.text.setBackground(booked ? theme.dot(theme.primary) : null);
             }
         });
 
@@ -189,7 +195,8 @@ public class UserCalendarFragment extends Fragment {
     /** אדפטר טקסט פשוט לרשימת התורים של החודש. */
     static class SimpleTextAdapter extends RecyclerView.Adapter<SimpleTextAdapter.VH> {
         private final List<String> items;
-        SimpleTextAdapter(List<String> items) { this.items = items; }
+        private final UsersSdkTheme theme;
+        SimpleTextAdapter(List<String> items, UsersSdkTheme theme) { this.items = items; this.theme = theme; }
 
         static class VH extends RecyclerView.ViewHolder {
             final TextView tv;
@@ -202,7 +209,14 @@ public class UserCalendarFragment extends Fragment {
             tv.setId(android.R.id.text1);
             tv.setTextSize(16f);
             int pad = (int) (16 * parent.getResources().getDisplayMetrics().density);
-            tv.setPadding(pad, pad / 2, pad, pad / 2);
+            tv.setPadding(pad, pad * 3 / 4, pad, pad * 3 / 4);
+            tv.setTextColor(theme.onSurface);
+            tv.setBackground(theme.rounded(theme.card));
+            theme.applyFont(tv);
+            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.bottomMargin = pad / 2;
+            tv.setLayoutParams(lp);
             return new VH(tv);
         }
 

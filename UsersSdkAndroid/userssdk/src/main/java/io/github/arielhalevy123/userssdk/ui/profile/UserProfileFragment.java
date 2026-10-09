@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.arielhalevy123.userssdk.R;
+import io.github.arielhalevy123.userssdk.ui.UsersSdkTheme;
 import io.github.arielhalevy123.userssdk.UsersSdk;
 import io.github.arielhalevy123.userssdk.appointments.AppointmentUtils;
 import io.github.arielhalevy123.userssdk.model.CustomFieldDTO;
@@ -30,6 +31,7 @@ public class UserProfileFragment extends Fragment {
     private TextView tvNextAppt, tvApptCount; // ⬅️ מציגים גם ל-USER וגם ל-ADMIN
     private RecyclerView rvFields;
     private FieldsAdapter adapter;
+    private UsersSdkTheme theme;
 
     private static final DateTimeFormatter DT_FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.getDefault());
@@ -39,6 +41,8 @@ public class UserProfileFragment extends Fragment {
                              @Nullable ViewGroup parent,
                              @Nullable Bundle state) {
         View v = inflater.inflate(R.layout.userssdk_fragment_user_profile, parent, false);
+        theme = UsersSdkTheme.of(requireContext());
+        theme.applyToScreen(v);
 
         tvName      = v.findViewById(R.id.tvName);
         tvEmail     = v.findViewById(R.id.tvEmail);
@@ -48,7 +52,7 @@ public class UserProfileFragment extends Fragment {
 
         rvFields = v.findViewById(R.id.rvFields);
         rvFields.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new FieldsAdapter();
+        adapter = new FieldsAdapter(theme);
         rvFields.setAdapter(adapter);
 
         loadUser();
@@ -152,6 +156,8 @@ public class UserProfileFragment extends Fragment {
     // ===== Recycler לשדות מותאמים =====
     static class FieldsAdapter extends RecyclerView.Adapter<FieldsAdapter.VH> {
         private final List<CustomFieldDTO> items = new ArrayList<>();
+        private final UsersSdkTheme theme;
+        FieldsAdapter(UsersSdkTheme theme) { this.theme = theme; }
         void submit(List<CustomFieldDTO> data) {
             items.clear();
             if (data != null) items.addAll(data);
@@ -166,7 +172,14 @@ public class UserProfileFragment extends Fragment {
             t.setId(android.R.id.text1);
             t.setTextSize(16f);
             int pad = (int)(16 * p.getResources().getDisplayMetrics().density);
-            t.setPadding(pad, pad/2, pad, pad/2);
+            t.setPadding(pad, pad * 3 / 4, pad, pad * 3 / 4);
+            t.setTextColor(theme.onSurface);
+            t.setBackground(theme.rounded(theme.card));
+            theme.applyFont(t);
+            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.bottomMargin = pad / 2;
+            t.setLayoutParams(lp);
             return new VH(t);
         }
         @Override public void onBindViewHolder(@NonNull VH h, int i) {

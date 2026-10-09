@@ -14,6 +14,7 @@ import io.github.arielhalevy123.userssdk.UsersSdk;
 import io.github.arielhalevy123.userssdk.model.CustomFieldDTO;
 import io.github.arielhalevy123.userssdk.model.UserDTO;
 import io.github.arielhalevy123.userssdk.R;
+import io.github.arielhalevy123.userssdk.ui.UsersSdkTheme;
 import com.kizitonwose.calendar.core.CalendarDay;
 import com.kizitonwose.calendar.view.*;
 
@@ -38,16 +39,19 @@ public class AdminCalendarFragment extends Fragment {
 
     private YearMonth currentMonth;
     private LocalDate selectedDate = null;
+    private UsersSdkTheme theme;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle state) {
         View root = inflater.inflate(R.layout.userssdk_fragment_admin_calendar, parent, false);
+        theme = UsersSdkTheme.of(requireContext());
+        theme.applyToScreen(root);
         calendarView = root.findViewById(R.id.calendarView);
         list = root.findViewById(R.id.rvDaySlots);
         titleDay = root.findViewById(R.id.tvDayTitle);
 
         list.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new AdminSlotsAdapter(visibleSlots);
+        adapter = new AdminSlotsAdapter(visibleSlots, theme);
         list.setAdapter(adapter);
 
         setupCalendar();
@@ -73,7 +77,13 @@ public class AdminCalendarFragment extends Fragment {
                 c.dayText.setText(String.valueOf(date.getDayOfMonth()));
 
                 // שחור בחודש הנוכחי, אפור בחודשים אחרים
-                c.dayText.setTextColor(YearMonth.from(date).equals(currentMonth) ? 0xFF000000 : 0xFFAAAAAA);
+                boolean selected = date.equals(selectedDate);
+                theme.applyFont(c.dayText);
+                c.dayText.setTextColor(selected ? theme.onPrimary
+                        : YearMonth.from(date).equals(currentMonth) ? theme.onSurface : theme.muted);
+                c.dayText.setBackground(selected ? theme.dot(theme.primary) : null);
+                c.badge.setBackground(theme.dot(theme.primary));
+                c.badge.setTextColor(theme.onPrimary);
 
                 List<Slot> slots = slotsByDate.get(date);
                 if (slots != null && !slots.isEmpty()) {
@@ -190,11 +200,20 @@ public class AdminCalendarFragment extends Fragment {
 
     static class AdminSlotsAdapter extends RecyclerView.Adapter<AdminSlotsAdapter.VH> {
         private final List<Slot> items;
-        AdminSlotsAdapter(List<Slot> items) { this.items = items; }
+        private final UsersSdkTheme theme;
+        AdminSlotsAdapter(List<Slot> items, UsersSdkTheme theme) { this.items = items; this.theme = theme; }
 
         @NonNull @Override public VH onCreateViewHolder(@NonNull ViewGroup parent, int vt) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_admin_slot, parent, false);
-            return new VH(v);
+            v.setBackground(theme.rounded(theme.card));
+            RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) v.getLayoutParams();
+            lp.bottomMargin = (int) (8 * parent.getResources().getDisplayMetrics().density);
+            VH h = new VH(v);
+            h.time.setTextColor(theme.primary);
+            h.name.setTextColor(theme.onSurface);
+            h.email.setTextColor(theme.muted);
+            theme.applyFont(h.time); theme.applyFont(h.name); theme.applyFont(h.email);
+            return h;
         }
         @Override public void onBindViewHolder(@NonNull VH h, int pos) {
             Slot s = items.get(pos);
