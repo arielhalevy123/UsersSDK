@@ -16,5 +16,7 @@
         <item name="usersSdkColorOnSurface">@color/barber_primary</item>
         <item name="usersSdkCornerRadius">@dimen/brand_corner_radius</item>
         <item name="android:statusBarColor">@color/barber_primary_dark</item>
+        <!-- targetSdk 35 draws edge-to-edge by default; these screens are not inset-aware yet. -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
     </style>
 </resources>
