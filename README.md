@@ -6,6 +6,9 @@ An Android library for user accounts in your app: register, login with JWT, prof
 custom fields and appointments, backed by a Spring Boot + PostgreSQL server you can use hosted or
 run yourself.
 
+**Documentation:** [arielhalevy123.github.io/UsersSDK](https://arielhalevy123.github.io/UsersSDK/)
+(architecture, REST API, library reference, example apps).
+
 ## Install
 
 ### 1. Add the JitPack repository
@@ -410,28 +413,16 @@ Log in as **admin@example.com** / **admin123** to see "Welcome, Admin" and the "
 
 To regenerate these screenshots (with the backend running): `node scripts/capture-admin-screenshots.js` (requires `npm install puppeteer`). Sample data includes the admin and two users (Alice Smith, Bob Jones) with custom fields and appointments.
 
-### Android app
+### Android apps
 
-Screenshots below were captured from a connected Android device. The app starts at a main screen with Register and Login; after login, admins see the admin appointments flow and users see the user flow (appointments, profile, calendar).
+The same booking app built twice from one codebase (`barberapp` flavours `barber` and `nails`).
+The calendar is the SDK's own screen; only the theme differs.
 
-| Main screen | Login | Profile |
-|-------------|-------|---------|
-| ![App main](docs/screenshots/app-main.png) | ![App login](docs/screenshots/app-login.png) | ![App profile](docs/screenshots/app-profile.png) |
+| Barber Shop | | Gel Nails Studio | |
+|---|---|---|---|
+| ![Barber welcome](docs/screenshots/barber-1-welcome.png) | ![Barber calendar](docs/screenshots/barber-3-calendar.png) | ![Nails welcome](docs/screenshots/nails-1-welcome.png) | ![Nails calendar](docs/screenshots/nails-3-calendar.png) |
 
-**How to capture these screens:** Open the app on your phone, then for each screen run the command below (from the project root). See [docs/ANDROID_SCREENSHOTS.md](docs/ANDROID_SCREENSHOTS.md) for full steps.
-
-```bash
-# 1. Show main screen (Register/Login) on phone, then:
-adb exec-out screencap -p > docs/screenshots/app-main.png
-
-# 2. Tap Login on phone, then:
-adb exec-out screencap -p > docs/screenshots/app-login.png
-
-# 3. Log in, open Profile on phone, then:
-adb exec-out screencap -p > docs/screenshots/app-profile.png
-```
-
-Use your Android SDK `adb` (e.g. `$HOME/Library/Android/sdk/platform-tools/adb`) if `adb` is not in your PATH.
+More in [docs/example-apps.md](docs/example-apps.md).
 
 ## Documentation
 
