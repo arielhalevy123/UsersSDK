@@ -1,0 +1,51 @@
+name: CI
+
+# Every pull request and every push to main: the server's tests and build, and the
+# Android SDK, its unit tests and the sample apps (both barber and nails flavours).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    name: Server (Spring Boot)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Test and build
+        run: ./gradlew build --no-daemon
+
+  android:
+    name: Android SDK and sample apps
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: UsersSdkAndroid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build SDK, run its unit tests, build the apps
+        run: >
+          ./gradlew --no-daemon
+          :userssdk:assembleRelease :userssdk:testDebugUnitTest
+          :app:assembleDebug :barberapp:assembleBarberDebug :barberapp:assembleNailsDebug
+      - name: Keep the sample apps as downloadable APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-apps
+          path: UsersSdkAndroid/barberapp/build/outputs/apk/*/debug/*.apk
+          retention-days: 14
