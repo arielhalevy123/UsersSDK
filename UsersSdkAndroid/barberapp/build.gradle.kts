@@ -22,6 +22,19 @@ android {
         buildConfig = true
     }
 
+    // One codebase, two businesses: each flavour only swaps colours, corner radius and
+    // wording (src/<flavour>/res), and the SDK screens follow through the theme.
+    flavorDimensions += "brand"
+    productFlavors {
+        create("barber") {
+            dimension = "brand"
+        }
+        create("nails") {
+            dimension = "brand"
+            applicationIdSuffix = ".nails"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

@@ -189,6 +189,29 @@ Fragment adminCal = UsersSdkCalendar.newAdminCalendarFragment();   // all appoin
 Fragment profile  = new UserProfileFragment();                      // name + custom fields editor
 ```
 
+### Theming the built-in screens
+
+The calendar, profile and add-appointment screens take their look from your app theme, so
+the same SDK screens can look like a barbershop or a gel nails studio. Set any of these in
+the theme your activities use; whatever you leave out falls back to your Material colours.
+
+```xml
+<style name="Theme.MyShop" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="usersSdkColorPrimary">#D4A84B</item>     <!-- marked days, badges, button -->
+    <item name="usersSdkColorOnPrimary">#141414</item>   <!-- text on the primary colour -->
+    <item name="usersSdkColorSurface">#F5F0E8</item>     <!-- screen background -->
+    <item name="usersSdkColorCard">#FFFFFF</item>        <!-- list rows -->
+    <item name="usersSdkColorOnSurface">#1A1A1A</item>   <!-- text -->
+    <item name="usersSdkColorMuted">#8A8A8A</item>       <!-- secondary text, other months -->
+    <item name="usersSdkCornerRadius">6dp</item>
+    <item name="usersSdkFontFamily">@font/my_font</item>
+</style>
+```
+
+The `barberapp` sample builds twice from one codebase: `assembleBarberDebug` (black and gold,
+sharp corners) and `assembleNailsDebug` (rose and blush, 24dp corners). The flavours differ
+only in `src/<flavour>/res`.
+
 ## Server
 
 The SDK needs a UsersSDK server. Two options:

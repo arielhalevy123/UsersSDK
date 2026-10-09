@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gel nails studio: the barber app's colour names, rose and blush values. -->
+<resources>
+    <color name="barber_primary">#FF4A2A35</color>
+    <color name="barber_primary_dark">#FF3A1F29</color>
+    <color name="barber_accent">#FFC9497A</color>
+    <color name="barber_accent_light">#FFF3B6C8</color>
+    <color name="barber_surface">#FFFFF3F6</color>
+    <color name="brand_on_accent">#FFFFFFFF</color>
+</resources>

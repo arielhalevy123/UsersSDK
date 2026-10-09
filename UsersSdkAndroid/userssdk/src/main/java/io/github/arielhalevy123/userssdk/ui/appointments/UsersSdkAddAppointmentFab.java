@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import io.github.arielhalevy123.userssdk.R;
+import io.github.arielhalevy123.userssdk.ui.UsersSdkTheme;
 import io.github.arielhalevy123.userssdk.UsersSdk;
 import io.github.arielhalevy123.userssdk.appointments.AppointmentUtils;
 import io.github.arielhalevy123.userssdk.model.UserDTO;
@@ -65,6 +66,9 @@ public class UsersSdkAddAppointmentFab extends FrameLayout {
         fab = new FloatingActionButton(context);
         fab.setUseCompatPadding(true);
         fab.setImageResource(R.drawable.userssdk_ic_add); // האייקון המצורף למטה
+        UsersSdkTheme theme = UsersSdkTheme.of(context);
+        fab.setBackgroundTintList(theme.primaryTint());
+        fab.setImageTintList(android.content.res.ColorStateList.valueOf(theme.onPrimary));
         LayoutParams lp = new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.END | Gravity.BOTTOM);
         int m = (int)(16 * getResources().getDisplayMetrics().density);
